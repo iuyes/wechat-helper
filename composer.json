@@ -1,0 +1,29 @@
+{
+    "name": "huying/wechat-helper",
+    "description": "",
+    "authors": [
+        {
+            "name": "xjchengo",
+            "email": "xchenxujian@126.com"
+        },
+        {
+            "name": "zcc",
+            "email": "zhang_chen_chen@sina.cn"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "guzzlehttp/guzzle": "~5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0",
+        "mockery/mockery": "0.9.3",
+        "illuminate/support": "4.2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Huying\\WechatHelper\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
