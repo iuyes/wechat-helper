@@ -159,6 +159,17 @@ class CallbackService implements CallbackServiceInterface
     public function picture($mediaId)
     {
         // TODO: Implement picture() method.
+        if (!$mediaId) {
+            throw new InvalidArgumentException('图片id不能为空');
+        }
+        $this->replyMessage = [
+            'ToUserName' => $this->fromUserName,
+            'FromUserName' => $this->toUserName,
+            'CreateTime' => time(),
+            'MsgType' => self::MSGTYPE_IMAGE,
+            'Image' => ['MediaId' => $mediaId];
+        ];
+        return $this;
     }
 
     /**
@@ -171,6 +182,17 @@ class CallbackService implements CallbackServiceInterface
     public function voice($mediaId)
     {
         // TODO: Implement voice() method.
+        if (!$mediaId) {
+            throw new InvalidArgumentException('语音id不能为空');
+        }
+        $this->replyMessage = [
+            'ToUserName' => $this->fromUserName,
+            'FromUserName' => $this->toUserName,
+            'CreateTime' => time(),
+            'MsgType' => self::MSGTYPE_VOICE;
+            'Voice' => ['MediaId' => $mediaId];
+        ];
+        return $this;
     }
 
     /**
@@ -182,9 +204,20 @@ class CallbackService implements CallbackServiceInterface
      * @return $this
      * @throws \InvalidArgumentException $mediaId为空时抛出
      */
-    public function video($mediaId, $title = null, $description = null)
+    public function video($mediaId, $title = null, $title = null, $description = null)
     {
         // TODO: Implement video() method.
+        if (!$mediaId) {
+            throw new InvalidArgumentException('视频id不能为空');
+        }
+        $this->replyMessage = [
+            'ToUserName' => $this->fromUserName,
+            'FromUserName' => $this->toUserName,
+            'CreateTime' => time(),
+            'MsgType' => self::MSGTYPE_IMAGE,
+            'Video' => ['MediaId' => $mediaId, 'title' => $title, 'Description' => $description];
+        ];
+        return $this;
     }
 
     /**
@@ -201,6 +234,23 @@ class CallbackService implements CallbackServiceInterface
     public function music($thumbMediaId, $musicUrl = null, $hqMusicUrl = null, $title = null, $description = null)
     {
         // TODO: Implement music() method.
+        if (!$mediaId) {
+            throw new InvalidArgumentException('音乐id不能为空');
+        }
+        $this->replyMessage = [
+            'ToUserName' => $this->fromUserName,
+            'FromUserName' => $this->toUserName,
+            'CreateTime' => time(),
+            'MsgType' => self::MSGTYPE_IMAGE,
+            'Music' => [
+            'Title' => $title,
+            'Description' => $description,
+            'MusicUrl' => $musicUrl,
+            'HQMusicUrl' => $hqMusicUrl,
+            'ThumbMediaId' => $mediaId
+            ];
+        ];
+        return $this;
     }
 
     /**

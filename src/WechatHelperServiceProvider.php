@@ -19,9 +19,15 @@ class WechatHelperServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
+
         //
     }
 
+    public function boot()
+    {
+        $this->package('huying/wechat-helper', null, __DIR__);
+    }
     /**
      * Get the services provided by the provider.
      *

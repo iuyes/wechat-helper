@@ -33,5 +33,5 @@ interface MsgCryptServiceInterface
      * @return string 解密后的原文
      * @throws \Huying\WechatHelper\Exceptions\MsgCryptException
      */
-    public function decryptMsg($msgSignature, $timestamp=null, $nonce, $postData, $msg);
+    public function decryptMsg($msgSignature, $timestamp=null, $nonce, $postData);
 }

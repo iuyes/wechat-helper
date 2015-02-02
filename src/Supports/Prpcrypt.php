@@ -12,7 +12,7 @@ class Prpcrypt
     public function __construct($appId, $key, PKCS7Encoder $encoder=null)
     {
         $this->appId = $appId;
-        $this->key = $key;
+        $this->key = base64_decode($key . "=");
         if ($encoder === null) {
             $encoder = new PKCS7Encoder();
         }
@@ -46,7 +46,8 @@ class Prpcrypt
             mcrypt_module_close($module);
             //使用BASE64对加密后的字符串进行编码
             return base64_encode($encrypted);
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             throw new MsgCryptException(MsgCryptException::$encryptAESError);
         }
     }
