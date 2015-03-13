@@ -69,10 +69,6 @@ class test
 
       $message = new GetMessageFromWechat($msgcrypt, $token, $params);
       print_r($message->getMessage($from_xml));
-      $err_aeskey = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFg";
-      $new_msgcrypt = new MsgCryptService($token, $err_aesKey, $appId);
-      $message = new GetMessageFromWechat($new_msgcrypt, $token, $params);
-      print_r($message->getMessage($from_xml));
 
       $reply = new CallbackToWechat($msgcrypt, $nonce);
       $reply->reply([], 1, 2);

@@ -5,7 +5,7 @@ use Huying\WechatHelper\Supports\SHA1;
 use Huying\WechatHelper\Supports\XMLParser;
 use Huying\WechatHelper\Exceptions\MsgCryptException;
 
-class MsgCryptService implements MsgCryptServiceInterface
+class MsgCryptService
 {
     protected $token;
     protected $aesKey;
@@ -14,11 +14,11 @@ class MsgCryptService implements MsgCryptServiceInterface
     protected $sha1;
     protected $XMLParser;
 
-    function __construct($token, $aesKey, $appId, Prpcrypt $prpcrypt=null, SHA1 $sha1=null, XMLParser $XMLParser=null)
+    function __construct($token = null, $aesKey = null, $appId = null, Prpcrypt $prpcrypt=null, SHA1 $sha1=null, XMLParser $XMLParser=null)
     {
-        $this->token = $token;
-        $this->aesKey = $aesKey;
-        $this->appId = $appId;
+        $this->token = isset($token) ? : Config::get('token');
+        $this->aesKey = isset($aesKey) ? : Config::get('aesKey');
+        $this->appId = isset($appId) ? : Config::get('appId');
         if ($prpcrypt === null) {
             $prpcrypt = new Prpcrypt($this->appId, $this->aesKey);
         }

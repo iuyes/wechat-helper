@@ -33,4 +33,18 @@ class Wechat
 		return $callback->reply($message, $this->_msg['FromUserName'], $this->_msg['ToUserName']);
 	}
 
+	public function __get($name)
+	{
+
+	}
+
+	public function __call()
+	{
+		
+	}
+
+
 }
+
+
+$wechat->creatmenu($menu);

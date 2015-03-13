@@ -4,7 +4,7 @@ use Config;
 use App;
 
 
-class GetMessageFromWechat implements GetMessageInterface
+class ReceiveService
 {
 
 	
@@ -21,9 +21,10 @@ class GetMessageFromWechat implements GetMessageInterface
 	protected $msgCrypt;
 
 
-	public function __construct(MsgCryptServiceInterface $msgCrypt, $token = null, $options = [])
+	public function __construct(MsgCryptService $msgCrypt =null, $token = null, $options = [])
 	{
-		$this->token = $token;//isset($token)?$token:Config::get('');
+		$this->token = isset($token) ? $token : Config::get('');
+		$this->msgCrypt = isset($msgCrypt) ? $msgCrypt : new MsgCryptService();
 		$this->getInputParams($options);
 		$this->msgCrypt = $msgCrypt;
 	}	
@@ -75,7 +76,7 @@ class GetMessageFromWechat implements GetMessageInterface
     		}
     	} else {
     		foreach ($this->params as $key => $value) {
-    			$this->params[$key] = isset($_GET[$key])?$_GET[$key]:'';
+    			$this->params[$key] = isset($_GET[$key]) ? $_GET[$key] : '';
     		}
     	}
 

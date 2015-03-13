@@ -1,32 +1,70 @@
-<?php
-namespace Huying\WechatHelper\Services;
+<?php namespace Huying\WechatHelper\Services;
 
-class CallbackToWechat implements CallbackInterface
+class ReplyService
 {
 	protected $msgCrypt;
 	protected $nonce;
 
-	public function __construct(MsgCryptServiceInterface $msgCrypt, $nonce)
+	public function __construct($nonce = null, MsgCryptService $msgCrypt = null)
 	{
-		$this->msgCrypt = $msgCrypt;
+		$this->msgCrypt = isset($msgCrypt) ?: new MsgCryptService();
 		$this->nonce = $nonce;
 	}
 
-	public function reply($message, $touser, $fromuser)
+	public function reply($message, $touser, $fromuser, $encrypt_type = null)
 	{
 		$reply_message['ToUserName'] = $touser;
 		$reply_message['FromUserName'] = $fromuser;
 		$reply_message['CreateTime'] = time();
 		$reply_message = array_merge($reply_message, $message);
-		$xml_message = $this->xmlEncode($reply_message);
+		$xml_message = self::xmlEncode($reply_message);
 
 
-		if (isset($_GET['encrypt_type']) && 'aes' == $_GET['encrypt_type']) {
+		if (isset($encrypt_type) && 'aes' == $encrypt_type) {
             $xml_message = $this->msgCrypt->encryptMsg($xml_message, time(), $this->nonce);
         }
 		echo $xml_message;
 		return true;
 	}
+
+    public function replyText($content, $touser, $fromuser, $encrypt_type = null)
+    {
+        $message = array(
+            'MsgType'   =>  'text',
+            'Content'   =>  $content
+            );
+        $this->reply($message, $touser, $fromuser, $encrypt_type);
+    }
+
+    public function replyVoice($mediaId, $touser, $fromuser, $encrypt_type = null)
+    {
+        $message = array(
+            'MsgType'   =>  'voice',
+            'Voice'   =>  ['MediaId' => $mediaId]
+            );
+        $this->reply($message, $touser, $fromuser, $encrypt_type);
+    }
+
+    public function replyVideo($mediaId, $touser, $fromuser, $title = null, $description = null, $encrypt_type = null) 
+    { 
+        $arr = ['MediaId' => $mediaId];
+        $title && $arr['Title'] = $title;
+        $description && $arr['Description'] = $description;
+        $message = array( 
+            'MsgType'   =>  'video', 
+            'Video'     =>  $arr 
+            );\c bbbbbbbbbbbbbbbbbbbbbbbbbbbb        $this->reply($message, $touser, $fromuser, $encrypt_type); 
+    }
+
+    public function replyMusic($content, $touser, $fromuser, $encrypt_type = null)
+    {
+        $message = array(
+            'MsgType'   =>  'text',
+            'Content'   =>  $content
+            );
+        $this->reply($message, $touser, $fromuser, $encrypt_type);
+    }
+
 
 
 	public static function xmlSafeStr($str)

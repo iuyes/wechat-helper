@@ -1,7 +1,7 @@
 <?php namespace Huying\WechatHelper\Services;
 
 use RuntimeException;
-USE InvalidArgumentException;
+use InvalidArgumentException;
 use Huying\WechatHelper\Exceptions\XMLParseErrorException;
 use Huying\WechatHelper\Exceptions\SignatureWrongException;
 use Huying\WechatHelper\Exceptions\ReplyNotFoundException;

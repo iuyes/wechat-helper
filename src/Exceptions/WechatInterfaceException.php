@@ -100,7 +100,8 @@ class WechatInterfaceException extends Exception
         '61456' => '客服账号个数超过限制(10个客服账号)',
         '61457' => '无效头像文件类型',
         '61500' => '日期格式错误',
-        '61501' => '日期范围错误'
+        '61501' => '日期范围错误',
+        '404'   =>  '获取二维码失败'
     ];
 
     protected $notDefinedMessage = '未定义错误';
