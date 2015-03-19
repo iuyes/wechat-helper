@@ -1,26 +1,21 @@
 <?php namespace Huying\WechatHelper\Services;
 
-class SendService
+class SendService extends BaseService
 {
-	protected $access_token;
-    public function __construct($access_token = null)
+    public function __construct($appid, $appsecret, $client, $history)
     {
-        if ($access_token) {
-            $this->access_token = $access_token;   
-        } else {
-            $this->access_token = BasicService::getAccessToken();
-        }
+        parent::__construct($appid, $appsecret, $client, $history);
     }
 
     public function uploadNews($articles)
     {
     	$data = json_encode(['articles' => $articles]);
     	$url = 'https://api.weixin.qq.com/cgi-bin/media/uploadnews?access_token='.$this->access_token;
-    	$res = BasicService::wechatInterfacePost($url, $data);
+    	$res = self::wechatInterfacePost($url, $data);
     	return $res;
     }
 
-    public static function sendByGroup($message, $group_id = null)
+    public function sendByGroup($message, $group_id = null)
     {
     	$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token='.$this->access_token;
     	if (isset($group_id)) {
@@ -29,11 +24,11 @@ class SendService
     		$message['filter'] = ['is_to_all' => true];
     	}
     	$data = json_encode($message);
-    	$res = BasicService::wechatInterfacePost($url, $data);
+    	$res = self::wechatInterfacePost($url, $data);
     	return $res['msg_id'];
     }
 
-    public static function sendById($message, $id)
+    public function sendById($message, $id)
     {
     	$message['touser'] = $id;
     	if (is_array($id)) {
@@ -42,12 +37,17 @@ class SendService
     		$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token='.$this->access_token;
     	}	
     	$data = json_encode($message);
-    	$res = BasicService::wechatInterfacePost($url, $data);
-    	return $res['msg_id'];
+    	$res = self::wechatInterfacePost($url, $data);
+        if (isset($res['msg_id'])) {
+            return $res['msg_id'];
+        } else {
+            return $res;
+        }
+    	
     }
 
 
-    public static function getGroupVideoId($media_id, $title = null, $description = null)
+    public function getGroupVideoId($media_id, $title = null, $description = null)
     {
         $url = 'https://file.api.weixin.qq.com/cgi-bin/media/uploadvideo?access_token='.$this->access_token;
     	$data['media_id'] = $media_id;
@@ -58,7 +58,7 @@ class SendService
     		$data['description'] = $description;
     	}
     	$data = json_encode($data1);
-    	$res = BasicService::wechatInterfacePost($url, $data);
+    	$res = self::wechatInterfacePost($url, $data);
     	return $res['media_id'];
     }
 
@@ -143,7 +143,7 @@ class SendService
     {
     	$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/delete?access_token='.$this->access_token;
     	$data = json_encode(['msg_id' => $msg_id]);
-    	BasicService::wechatInterfacePost($url, $data);
+    	self::wechatInterfacePost($url, $data);
     	return true;
     }
 
@@ -151,7 +151,7 @@ class SendService
     {
     	$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token='.$this->access_token;
     	$data = json_encode(['msg_id' => $msg_id]);
-    	$res = BasicService::wechatInterfacePost($url, $data);
+    	$res = self::wechatInterfacePost($url, $data);
     	return $res['msg_status'];
     }
 

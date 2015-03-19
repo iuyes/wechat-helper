@@ -1,50 +1,67 @@
 <?php namespace Huying\WechatHelper;
 
-use Huying\WechatHelper\Services\CallbackInterface;
-use Huying\WechatHelper\Services\GetMessageInterface;
+use Huying\WechatHelper\Services\BaseService;
+use Huying\WechatHelper\Services\CallbackService;
+use Huying\WechatHelper\Services\CustomerService;
+use Huying\WechatHelper\Services\JsService;
+use Huying\WechatHelper\Services\MediaService;
+use Huying\WechatHelper\Services\MemberService;
+use Huying\WechatHelper\Services\MenuService;
+use Huying\WechatHelper\Services\QrcodeService;
+use Huying\WechatHelper\Services\SendService;
+use GuzzleHttp\Client;
+use GuzzleHttp\Subscriber\History;
+use Config;
+//use Huying\WechatHelper\Services\MsgCryptService;
+
+
 
 class Wechat
 {
-	protected $callback;
-	protected $getMessage;
-	protected $token;
-	protected $_msg;
-	/*protected $access_token;
-	protected $appid;
-	protected $appsecret;*/
+	protected $classes = array (
+		'base'		=>	'',
+		'callback'	=>	'',
+		'customer'	=>	'',
+		'js'		=>	'',
+		'media'		=>	'',
+		'member'	=>	'',
+		'menu'		=>	'',
+		'qrcode'	=>	'',
+		'send'		=>	'',
+		);
+	protected $client;
+	protected $history;
+	
+	
 
-	public function __construct(CallbackInterface $callback, GetMessageInterface $getMessage,$token = null, $options = [])
+	public function __construct(
+		BaseService $base = null, CallbackService $callback = null,
+	    CustomerService $customer = null, JsService $js = null, 
+		MediaService $media = null, MemberService $member = null,
+		MenuService $menu = null, QrcodeService $qrcode = null, SendService $send = null
+    )
 	{
-		$this->callback = $callback;
-		$this->getMessage = $getMessage;
-		$this->token = isset($token)?$token:Config::get('');
-		/*$this->appid = isset($options["appid"])?$token:Config::get('');
-		$this->appsecret = isset($options["appsecret"])?$token:Config::get('');*/
+		$this->client = new Client();
+		$this->history = new History();
+		$this->client->getEmitter()->attach($this->history);
+		foreach ($this->classes as $key => $value) {
+			$class_name = 'Huying\WechatHelper\Services\\'.ucfirst($key).'Service';
+			if ($key != 'callback') {
+				$this->classes[$key] = $$key ?: new $class_name(Config::get('test.appId'), Config::get('test.appsecret'), $this->client, $this->history);
+			} else {
+				$this->classes['callback'] = $callback ?: new CallbackService();
+			}
+		}
 	}
 
-	public function getMessage()
+	public function __call($method, $args)
 	{
-		$this->_msg = $getMessage->getMessage($this->token);
-		return $this->_msg;
-	}
-
-	public function reply($message)
-	{
-		return $callback->reply($message, $this->_msg['FromUserName'], $this->_msg['ToUserName']);
-	}
-
-	public function __get($name)
-	{
-
-	}
-
-	public function __call()
-	{
-		
+		foreach ($this->classes as $key => $value) {
+			if (method_exists($value, $method)) {
+				return call_user_func_array(array($value, $method), $args);
+			}
+		}
 	}
 
 
 }
-
-
-$wechat->creatmenu($menu);

@@ -1,43 +1,37 @@
-<?php namespace Huying\WechatHelper\Services\CustomerService;
+<?php namespace Huying\WechatHelper\Services;
 
-use Huying\WechatHelper\Services\BasicService\BasicService;
-
-class CustomerService
+class CustomerService extends BaseService
 {
-	protected $access_token;
 
-	public function __construct($access_token = null)
+	public function __construct($appid, $appsecret, $client, $history)
 	{
-		if ($access_token) {
-            $this->access_token = $access_token;   
-        } else {
-            $this->access_token = BasicService::getAccessToken();
-        }
+		parent::__construct($appid, $appsecret, $client, $history);
 	}
 
 	public function getList()
 	{
 		$url = 'https://api.weixin.qq.com/cgi-bin/customservice/getkflist?access_token='.$this->access_token;
-		$res = BasicService::wechatInterfaceGet($url);
+		$res = self::wechatInterfaceGet($url);
 		return $res['kf_list'];
 	}
 
 	public function getOnlineList()
 	{
 		$url = 'https://api.weixin.qq.com/cgi-bin/customservice/getonlinekflist?access_token='.$this->access_token;
-		$res = BasicService::wechatInterfaceGet($url);
+		$res = self::wechatInterfaceGet($url);
 		return $res['kf_online_list'];
 	}
 
 	public function addAccount($kf_account, $nickname, $pwd)
 	{
-		$url = 'https://api.weixin.qq.com/cgi-bin/customservice/getonlinekflist?access_token='.$this->access_token;
+		$url = 'https://api.weixin.qq.com/customservice/kfaccount/add?access_token='.$this->access_token;
 		$data = array(
-			'kf_account'	=>	$kf_account;
-			'nickname'		=>	$nickname;
-			'password'		=>	$pwd;
+			'kf_account'	=>	$kf_account,
+			'nickname'		=>	$nickname,
+			'password'		=>	$pwd
 			);
-		BasicService::wechatInterfacePost($url, $data);
+		$data = json_encode($data);
+		self::wechatInterfacePost($url, $data);
 		return true;
 	}
 
@@ -45,7 +39,7 @@ class CustomerService
 	{
 		$url = 'http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?access_token='.$this->access_token.
 		'&kf_account='.$kf_account;
-		BasicService::wechatInterfacePost($url, array('media' => '@'.$file_path));
+		self::wechatInterfacePost($url, array('media' => '@'.$file_path));
 		return true;
 	}
 
@@ -53,7 +47,7 @@ class CustomerService
 	{
 		$url = 'https://api.weixin.qq.com/customservice/kfaccount/del?access_token='.$this->access_token.
 		'&kf_account='.$kf_account;
-		BasicService::wechatInterfaceGet($url);
+		self::wechatInterfaceGet($url);
 		return true;
 	}
 
@@ -66,7 +60,7 @@ class CustomerService
 			$data['customservice'] = ['kf_account' => $kf_account];
 		}
 		$json = json_encode($data);
-		BasicService::wechatInterfacePost($url, $json);
+		self::wechatInterfacePost($url, $json);
 		return true;
 	}
 
@@ -81,7 +75,7 @@ class CustomerService
 			$data['text'] = $text;
 		}
 		$json = json_encode($data);
-		BasicService::wechatInterfacePost($url, $json);
+		self::wechatInterfacePost($url, $json);
 		return true;
 	}
 
@@ -96,7 +90,7 @@ class CustomerService
 			$data['text'] = $text;
 		}
 		$json = json_encode($data);
-		BasicService::wechatInterfacePost($url, $json);
+		self::wechatInterfacePost($url, $json);
 		return true;
 	}
 
@@ -104,22 +98,22 @@ class CustomerService
 	{
 		$url = 'https://api.weixin.qq.com/customservice/kfsession/getsession?access_token='.$this->access_token.
 		'&openid='.$openid;
-		$res = BasicService::wechatInterfaceGet($url);
+		$res = self::wechatInterfaceGet($url);
 		return $res;
 	}
 
-	public function getkfSessionState($kf_account)
+	public function getkfSessionListState($kf_account)
 	{
 		$url = 'https://api.weixin.qq.com/customservice/kfsession/getsessionlist?access_token='.$this->access_token.
 		'&kf_account='.$kf_account;
-		$res = BasicService::wechatInterfaceGet($url);
+		$res = self::wechatInterfaceGet($url);
 		return $res['sessionlist'];
 	}
 
 	public function getkfWaitList()
 	{
 		$url = 'https://api.weixin.qq.com/customservice/kfsession/getwaitcase?access_token='.$this->access_token;
-		$res = BasicService::wechatInterfaceGet($url);
+		$res = self::wechatInterfaceGet($url);
 		return $res;
 	}
 
@@ -136,7 +130,7 @@ class CustomerService
 			$data['openid'] = $openid;
 		}
 		$json = json_encode($data);
-		$res = BasicService::wechatInterfacePost($url, $json);
+		$res = self::wechatInterfacePost($url, $json);
 		return $res['recordlist'];
 	}
 

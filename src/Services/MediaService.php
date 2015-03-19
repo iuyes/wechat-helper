@@ -1,16 +1,10 @@
 <?php namespace Huying\WechatHelper\Services;
 
-class MediaService
+class MediaService extends BaseService
 {
-    protected $access_token;
-    public function __construct($access_token = null)
+    public function __construct($appid, $appsecret, $client, $history)
     {
-        if ($access_token) {
-            $this->access_token = $access_token;   
-        } else {
-            $this->access_token = BasicService::getAccessToken();
-        }
-        
+        parent::__construct($appid, $appsecret, $client, $history);
     }
     /**
      * 公众号可调用本接口来获取多媒体文件，视频文件不支持下载
@@ -25,6 +19,17 @@ class MediaService
     public function getMedia($mediaId, $directory, $filename=null)
     {
         $url = 'http://file.api.weixin.qq.com/cgi-bin/media/get?access_token='.$this->access_token.'&media_id='.$mediaId;
+        $img = self::wechatInterfaceGet($url, true);
+        if (substr($directory, -1) != '/') {
+            $directory = $directory.'/';
+        }
+        if ($filename === null) {
+            $filename = md5($img->getBody()).'.jpg';
+        }
+        $file = fopen($directory.$filename, 'w');
+        fwrite($file, $img->getBody());
+        fclose($file);
+        return true;
     }
 
     /**
@@ -42,16 +47,36 @@ class MediaService
     public function uploadMedia($type, $file_path)
     {
         $url = 'http://file.api.weixin.qq.com/cgi-bin/media/upload?access_token='.$this->access_token.'&type='.$type;
-        $res = BasicService::wechatInterfacePost($url, array('media' => '@'.$file_path));
-        //$key = 
-        //$expire_mins = 3*24*60 - 60;
-        //Cache::put($key, $res['access_token'], $expire_mins);
-        return $res;
-    }
+        //$res = self::wechatInterfacePost($url, array('media' => '@'.$file_path));
+        //return $res;
+        //$data = array('media' => '@'.$file_path);
+        /*$data = 'media=@'.$file_path;
 
-    public function getMediaId($filename)
-    {
-        
+        var_dump($data);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        # curl_setopt( $ch, CURLOPT_HEADER, 1);
+
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        $data = curl_exec($ch);
+        if (!$data)
+        {
+            error_log(curl_error($ch));
+        }
+        curl_close($ch);
+        return $data;*/
+
+
+        $command = 'curl -F media=@'.$file_path.' "'.$url.'"';
+        var_dump($command);
+        return exec($command, $out);
+
+
     }
 
 }
