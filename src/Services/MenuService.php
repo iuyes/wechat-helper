@@ -1,31 +1,34 @@
 <?php namespace Huying\WechatHelper\Services;
 
 
-class MenuService extends BaseService
+class MenuService
 {
-    public function __construct($appid, $appsecret, $client, $history)
+    protected $base_service;
+
+    public function __construct(BaseService $base_service)
     {
-        parent::__construct($appid, $appsecret, $client, $history);
+        $this->base_service = $base_service;
     }
+
 
     public function createMenu($json_menu)
     {
-    	$url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->access_token;
-    	self::wechatInterfacePost($url, $json_menu);
+    	$url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->base_service->access_token;
+    	$this->base_service->wechatInterfacePost($url, $json_menu);
     	return true;
     }
 
     public function getMenu()
     {
-    	$url = 'https://api.weixin.qq.com/cgi-bin/menu/get?access_token='.$this->access_token;
-    	$res = self::wechatInterfaceGet($url);
+    	$url = 'https://api.weixin.qq.com/cgi-bin/menu/get?access_token='.$this->base_service->access_token;
+    	$res = $this->base_service->wechatInterfaceGet($url);
     	return $res;
     }
 
     public function delMenu()
     {
-    	$url = 'https://api.weixin.qq.com/cgi-bin/menu/delete?access_token='.$this->access_token;
-    	self::wechatInterfaceGet($url);
+    	$url = 'https://api.weixin.qq.com/cgi-bin/menu/delete?access_token='.$this->base_service->access_token;
+    	$this->base_service->wechatInterfaceGet($url);
     	return true;
     }
 

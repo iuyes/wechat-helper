@@ -10,7 +10,7 @@ class BaseService
 {
 	protected $appid;
 	protected $appsecret;
-	protected $access_token;
+	public $access_token;
 	protected static $client;
 	protected static $history;
 

@@ -44,14 +44,22 @@ class Wechat
 		$this->client = new Client();
 		$this->history = new History();
 		$this->client->getEmitter()->attach($this->history);
-		foreach ($this->classes as $key => $value) {
+		/*foreach ($this->classes as $key => $value) {
 			$class_name = 'Huying\WechatHelper\Services\\'.ucfirst($key).'Service';
 			if ($key != 'callback') {
 				$this->classes[$key] = $$key ?: new $class_name(Config::get('test.appId'), Config::get('test.appsecret'), $this->client, $this->history);
 			} else {
 				$this->classes['callback'] = $callback ?: new CallbackService();
 			}
-		}
+		}*/
+		$this->classes['base'] = $base ?: new BaseService(Config::get('test.appId'), Config::get('test.appsecret'), $this->client, $this->history);
+		$this->classes['callback'] = $callback ?: new CallbackService();
+		//$this->classes['member'] = $member ?: new MemberService($this->classes['base']);
+		foreach ($this->classes as $key => $value) {
+			$class_name = 'Huying\WechatHelper\Services\\'.ucfirst($key).'Service';
+			if ($key != 'callback' && $key != 'base') {
+				$this->classes[$key] = $$key ?: new $class_name($this->classes['base']);
+			}
 	}
 
 	public function __call($method, $args)

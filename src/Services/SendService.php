@@ -1,30 +1,33 @@
 <?php namespace Huying\WechatHelper\Services;
 
-class SendService extends BaseService
+class SendService
 {
-    public function __construct($appid, $appsecret, $client, $history)
+    protected $base_service;
+
+    public function __construct(BaseService $base_service)
     {
-        parent::__construct($appid, $appsecret, $client, $history);
+        $this->base_service = $base_service;
     }
+
 
     public function uploadNews($articles)
     {
     	$data = json_encode(['articles' => $articles]);
-    	$url = 'https://api.weixin.qq.com/cgi-bin/media/uploadnews?access_token='.$this->access_token;
-    	$res = self::wechatInterfacePost($url, $data);
+    	$url = 'https://api.weixin.qq.com/cgi-bin/media/uploadnews?access_token='.$this->base_service->access_token;
+    	$res = $this->base_service->wechatInterfacePost($url, $data);
     	return $res;
     }
 
     public function sendByGroup($message, $group_id = null)
     {
-    	$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token='.$this->access_token;
+    	$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token='.$this->base_service->access_token;
     	if (isset($group_id)) {
     		$message['filter'] = ['is_to_all' => false, 'group_id' => $group_id];
     	} else {
     		$message['filter'] = ['is_to_all' => true];
     	}
     	$data = json_encode($message);
-    	$res = self::wechatInterfacePost($url, $data);
+    	$res = $this->base_service->wechatInterfacePost($url, $data);
     	return $res['msg_id'];
     }
 
@@ -32,12 +35,12 @@ class SendService extends BaseService
     {
     	$message['touser'] = $id;
     	if (is_array($id)) {
-    		$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token='.$this->access_token;
+    		$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token='.$this->base_service->access_token;
     	} else {
-    		$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token='.$this->access_token;
+    		$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token='.$this->base_service->access_token;
     	}	
     	$data = json_encode($message);
-    	$res = self::wechatInterfacePost($url, $data);
+    	$res = $this->base_service->wechatInterfacePost($url, $data);
         if (isset($res['msg_id'])) {
             return $res['msg_id'];
         } else {
@@ -49,7 +52,7 @@ class SendService extends BaseService
 
     public function getGroupVideoId($media_id, $title = null, $description = null)
     {
-        $url = 'https://file.api.weixin.qq.com/cgi-bin/media/uploadvideo?access_token='.$this->access_token;
+        $url = 'https://file.api.weixin.qq.com/cgi-bin/media/uploadvideo?access_token='.$this->base_service->access_token;
     	$data['media_id'] = $media_id;
     	if ($title) {
     		$data['title'] = $title;
@@ -58,7 +61,7 @@ class SendService extends BaseService
     		$data['description'] = $description;
     	}
     	$data = json_encode($data1);
-    	$res = self::wechatInterfacePost($url, $data);
+    	$res = $this->base_service->wechatInterfacePost($url, $data);
     	return $res['media_id'];
     }
 
@@ -141,17 +144,17 @@ class SendService extends BaseService
 
     public function delGroupMessage($msg_id)
     {
-    	$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/delete?access_token='.$this->access_token;
+    	$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/delete?access_token='.$this->base_service->access_token;
     	$data = json_encode(['msg_id' => $msg_id]);
-    	self::wechatInterfacePost($url, $data);
+    	$this->base_service->wechatInterfacePost($url, $data);
     	return true;
     }
 
     public function getGroupMessageStatus($msg_id)
     {
-    	$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token='.$this->access_token;
+    	$url = 'https://api.weixin.qq.com/cgi-bin/message/mass/get?access_token='.$this->base_service->access_token;
     	$data = json_encode(['msg_id' => $msg_id]);
-    	$res = self::wechatInterfacePost($url, $data);
+    	$res = $this->base_service->wechatInterfacePost($url, $data);
     	return $res['msg_status'];
     }
 

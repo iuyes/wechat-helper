@@ -1,10 +1,12 @@
 <?php namespace Huying\WechatHelper\Services;
 
-class JsService extends BaseService
+class JsService
 {
-	public function __construct($appid, $appsecret, $client, $history)
+	protected $base_service;
+
+	public function __construct(BaseService $base_service)
 	{
-		parent::__construct($appid, $appsecret, $client, $history);
+		$this->base_service = $base_service;
 	}
 
 	public function getJsApiTicket()
@@ -13,10 +15,10 @@ class JsService extends BaseService
         if(Cache::has($key)) {
             return Cache::get($key);
         } else {
-        	$access_token = self::getAccessToken($this->appid, $this->appsecret);
+        	$access_token = $this->base_service->access_token;
 		    //var_dump($access_token);
         	$url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token={$access_token}";
-        	$res = self::wechatInterfaceGet($url);
+        	$res = $this->base_service->wechatInterfaceGet($url);
         	$expire_mins = $res['expires_in']/60-1;
         	Cache::put($key, $res['ticket'], $expire_mins);
         	return $res['ticket'];
@@ -47,10 +49,10 @@ class JsService extends BaseService
         if(Cache::has($key)) {
             return Cache::get($key);
         } else {
-        	$access_token = self::getAccessToken($this->appid, $this->appsecret);
+        	$access_token = $this->base_service->access_token;
 		    //var_dump($access_token);
         	$url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=wx_card&access_token={$access_token}";
-        	$res = self::wechatInterfaceGet($url);
+        	$res = $this->base_service->wechatInterfaceGet($url);
         	$expire_mins = $res['expires_in']/60-1;
         	Cache::put($key, $res['ticket'], $expire_mins);
         	return $res['ticket'];

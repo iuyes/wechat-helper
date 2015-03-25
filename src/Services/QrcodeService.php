@@ -1,22 +1,24 @@
 <?php namespace Huying\WechatHelper\Services;
 
 
-class QrcodeService extends BaseService
+class QrcodeService
 {
+    protected $base_service;
 
-    public function __construct($appid, $appsecret, $client, $history)
+    public function __construct(BaseService $base_service)
     {
-        parent::__construct($appid, $appsecret, $client, $history);
+        $this->base_service = $base_service;
     }
+
 
     public function getQrcodeWithId($param, $dir, $filename = null, $expire = null)
     {
-        return self::getQrcode('id', $param, $dir, $filename, $expire, $this->access_token);
+        return self::getQrcode('id', $param, $dir, $filename, $expire, $this->base_service->access_token);
     }
 
     public function getQrcodeWithStr($param,$dir, $filename=null)
     {
-        return self::getQrcode('str', $param, $dir, $filename, null, $this->access_token);
+        return self::getQrcode('str', $param, $dir, $filename, null, $this->base_service->access_token);
     }
 
     /**
@@ -27,8 +29,8 @@ class QrcodeService extends BaseService
      */
     public static function getWechatServerIp()
     {
-        $url = 'https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token='.$this->access_token;
-        $res = self::wechatInterfaceGet($url);
+        $url = 'https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token='.$this->base_service->access_token;
+        $res = $this->base_service->wechatInterfaceGet($url);
         return $res['ip_list'];
     }
 
@@ -41,7 +43,7 @@ class QrcodeService extends BaseService
         /*$client = new Client();
         $history = new History();
         $client->getEmitter()->attach($history);*/
-        $res = self::wechatInterfaceGet($url, true);
+        $res = $this->base_service->wechatInterfaceGet($url, true);
         if (substr($dir, -1) != '/') {
             $dir = $dir.'/';
         }
@@ -79,7 +81,7 @@ class QrcodeService extends BaseService
             }
         }
         $data = json_encode($data);
-        $res = self::wechatInterfacePost($url, $data);
+        $res = $this->base_service->wechatInterfacePost($url, $data);
         //return $res;
         return self::getQrcodeByTicket($res['ticket'], $dir, $filename);
     }

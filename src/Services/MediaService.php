@@ -1,11 +1,14 @@
 <?php namespace Huying\WechatHelper\Services;
 
-class MediaService extends BaseService
+class MediaService
 {
-    public function __construct($appid, $appsecret, $client, $history)
+    protected $base_service;
+
+    public function __construct(BaseService $base_service)
     {
-        parent::__construct($appid, $appsecret, $client, $history);
+        $this->base_service = $base_service;
     }
+
     /**
      * 公众号可调用本接口来获取多媒体文件，视频文件不支持下载
      *
@@ -18,8 +21,8 @@ class MediaService extends BaseService
      */
     public function getMedia($mediaId, $directory, $filename=null)
     {
-        $url = 'http://file.api.weixin.qq.com/cgi-bin/media/get?access_token='.$this->access_token.'&media_id='.$mediaId;
-        $img = self::wechatInterfaceGet($url, true);
+        $url = 'http://file.api.weixin.qq.com/cgi-bin/media/get?access_token='.$this->base_service->access_token.'&media_id='.$mediaId;
+        $img = $this->base_service->wechatInterfaceGet($url, true);
         if (substr($directory, -1) != '/') {
             $directory = $directory.'/';
         }
@@ -46,7 +49,7 @@ class MediaService extends BaseService
      */
     public function uploadMedia($type, $file_path)
     {
-        $url = 'http://file.api.weixin.qq.com/cgi-bin/media/upload?access_token='.$this->access_token.'&type='.$type;
+        $url = 'http://file.api.weixin.qq.com/cgi-bin/media/upload?access_token='.$this->base_service->access_token.'&type='.$type;
         //$res = self::wechatInterfacePost($url, array('media' => '@'.$file_path));
         //return $res;
         //$data = array('media' => '@'.$file_path);
