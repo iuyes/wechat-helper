@@ -9,21 +9,21 @@ class CustomerService
 		$this->base_service = $base_service;
 	}
 
-	public function getList()
+	public function getKfList()
 	{
 		$url = 'https://api.weixin.qq.com/cgi-bin/customservice/getkflist?access_token='.$this->base_service->access_token;
 		$res = $this->base_service->wechatInterfaceGet($url);
 		return $res['kf_list'];
 	}
 
-	public function getOnlineList()
+	public function getOnlineKfList()
 	{
 		$url = 'https://api.weixin.qq.com/cgi-bin/customservice/getonlinekflist?access_token='.$this->base_service->access_token;
 		$res = $this->base_service->wechatInterfaceGet($url);
 		return $res['kf_online_list'];
 	}
 
-	public function addAccount($kf_account, $nickname, $pwd)
+	public function addKfAccount($kf_account, $nickname, $pwd)
 	{
 		$url = 'https://api.weixin.qq.com/customservice/kfaccount/add?access_token='.$this->base_service->access_token;
 		$data = array(
@@ -36,7 +36,7 @@ class CustomerService
 		return true;
 	}
 
-	public function uploadHeadImg($kf_account, $file_path)
+	public function uploadKfHeadImg($kf_account, $file_path)
 	{
 		$url = 'http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?access_token='.$this->base_service->access_token.
 		'&kf_account='.$kf_account;
@@ -44,7 +44,7 @@ class CustomerService
 		return true;
 	}
 
-	public function delAccount($kf_account)
+	public function delKfAccount($kf_account)
 	{
 		$url = 'https://api.weixin.qq.com/customservice/kfaccount/del?access_token='.$this->base_service->access_token.
 		'&kf_account='.$kf_account;
@@ -65,7 +65,7 @@ class CustomerService
 		return true;
 	}
 
-	public function createkfSession($openid, $kf_account, $text = null)
+	public function createKfSession($openid, $kf_account, $text = null)
 	{
 		$url = 'https://api.weixin.qq.com/customservice/kfsession/create?access_token='.$this->base_service->access_token;
 		$data = array(
@@ -80,7 +80,7 @@ class CustomerService
 		return true;
 	}
 
-	public function closekfSession($openid, $kf_account, $text = null)
+	public function closeKfSession($openid, $kf_account, $text = null)
 	{
 		$url = 'https://api.weixin.qq.com/customservice/kfsession/close?access_token='.$this->base_service->access_token;
 		$data = array(
@@ -95,7 +95,7 @@ class CustomerService
 		return true;
 	}
 
-	public function getkfSessionState($openid)
+	public function getKfSessionState($openid)
 	{
 		$url = 'https://api.weixin.qq.com/customservice/kfsession/getsession?access_token='.$this->base_service->access_token.
 		'&openid='.$openid;
@@ -103,7 +103,7 @@ class CustomerService
 		return $res;
 	}
 
-	public function getkfSessionListState($kf_account)
+	public function getKfSessionListState($kf_account)
 	{
 		$url = 'https://api.weixin.qq.com/customservice/kfsession/getsessionlist?access_token='.$this->base_service->access_token.
 		'&kf_account='.$kf_account;
@@ -111,7 +111,7 @@ class CustomerService
 		return $res['sessionlist'];
 	}
 
-	public function getkfWaitList()
+	public function getKfWaitList()
 	{
 		$url = 'https://api.weixin.qq.com/customservice/kfsession/getwaitcase?access_token='.$this->base_service->access_token;
 		$res = $this->base_service->wechatInterfaceGet($url);

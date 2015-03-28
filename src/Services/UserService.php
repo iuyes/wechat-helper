@@ -1,7 +1,7 @@
 <?php namespace Huying\WechatHelper\Services;
 
 
-class MemberService
+class UserService
 {
     protected $base_service;
 
@@ -52,7 +52,7 @@ class MemberService
         return true;
     }
 
-    public function modifyGroupForMember($openid, $groupid)
+    public function modifyGroupForUser($openid, $groupid)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/groups/members/update?access_token='.$this->base_service->access_token;
         $json = json_encode(['openid' => $openid, 'to_groupid' => $groupid]);
@@ -60,7 +60,7 @@ class MemberService
         return true;
     }
 
-    public function modifyGroupForMembers($openid_list, $groupid)
+    public function modifyGroupForUsers($openid_list, $groupid)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/groups/members/batchupdate?access_token='.$this->base_service->access_token;
         $json = json_encode(['openid_list' => $openid_list, 'to_groupid' => $groupid]);
@@ -68,7 +68,7 @@ class MemberService
         return true;
     }
 
-    public function modifyMemberRemark($remark, $openid)
+    public function modifyUserRemark($remark, $openid)
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token='.$this->base_service->access_token;
         $json = json_encode(['openid' => $openid, 'remark' => urlencode($remark)]);
@@ -76,7 +76,7 @@ class MemberService
         return true;
     }
 
-    public function getMemberInfo($openid, $lang = 'zh_CN')
+    public function getUserInfo($openid, $lang = 'zh_CN')
     {
         $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->base_service->access_token.'&openid='.$openid.'&lang='.$lang;
         return $this->base_service->wechatInterfaceGet($url);
@@ -120,7 +120,7 @@ class MemberService
         }       
     }
 
-    public function getOauthMemberInfo($oauth_token, $openid, $lang = 'zh_CN')
+    public function getOauthUserInfo($oauth_token, $openid, $lang = 'zh_CN')
     {
         $url = "https://api.weixin.qq.com/sns/userinfo?access_token={$oauth_token}&openid={$openid}&lang={$lang}";
         return $this->base_service->wechatInterfaceGet($url);

@@ -5,7 +5,7 @@ use Huying\WechatHelper\Services\CallbackService;
 use Huying\WechatHelper\Services\CustomerService;
 use Huying\WechatHelper\Services\JsService;
 use Huying\WechatHelper\Services\MediaService;
-use Huying\WechatHelper\Services\MemberService;
+use Huying\WechatHelper\Services\UserService;
 use Huying\WechatHelper\Services\MenuService;
 use Huying\WechatHelper\Services\QrcodeService;
 use Huying\WechatHelper\Services\SendService;
@@ -24,7 +24,7 @@ class Wechat
 		'customer'	=>	'',
 		'js'		=>	'',
 		'media'		=>	'',
-		'member'	=>	'',
+		'user'		=>	'',
 		'menu'		=>	'',
 		'qrcode'	=>	'',
 		'send'		=>	'',
@@ -37,7 +37,7 @@ class Wechat
 	public function __construct(
 		BaseService $base = null, CallbackService $callback = null,
 	    CustomerService $customer = null, JsService $js = null, 
-		MediaService $media = null, MemberService $member = null,
+		MediaService $media = null, UserService $user = null,
 		MenuService $menu = null, QrcodeService $qrcode = null, SendService $send = null
     )
 	{
